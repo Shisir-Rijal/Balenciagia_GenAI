@@ -1,4 +1,16 @@
 {
-  "_comment": "ComfyUI workflow template for Asset 1 — ID Card. Replace with real exported workflow JSON from ComfyUI.",
-  "placeholder": true
+  "_SETUP": [
+    "1. In ComfyUI, build your workflow and click 'Save (API format)' — this gives you the raw JSON.",
+    "2. Paste the exported JSON here, replacing everything below this _SETUP key.",
+    "3. In the node that loads the input photo (LoadImage), change the 'image' value to exactly: \"__INPUT_IMAGE__\"",
+    "4. Optional: anywhere you want the guest name use \"__GUEST_NAME__\", guest code use \"__GUEST_CODE__\"",
+    "5. Set COMFY_URL=http://localhost:8188 in .env (or your ngrok URL if remote)",
+    "Done — the frontend will upload the captured photo and trigger your workflow automatically."
+  ],
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "__INPUT_IMAGE__"
+    }
+  }
 }
