@@ -30,7 +30,7 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
         <div
           className="w-full h-full bg-cover bg-center"
           style={{
-            backgroundImage: "url('/backgrounds/landing.jpg')",
+            backgroundImage: "url('/backgrounds/screen.png')",
             filter: "blur(2px) brightness(0.4)",
             transform: "scale(1.05)",
           }}
@@ -116,7 +116,7 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
             margin: 0,
           }}
         >
-          S / S &nbsp; 2 4
+          S/S 24
         </h2>
 
         {/* ENTER CTA */}
