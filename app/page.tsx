@@ -1,7 +1,7 @@
 "use client";
 
 import { useReducer, useEffect, useRef, useState } from "react";
-import { flowReducer, initialState, Step, PROGRESS_STEPS } from "@/lib/steps";
+import { flowReducer, initialState, Step, PROGRESS_STEPS, STEP_ORDER } from "@/lib/steps";
 
 // Screen components (stubs — replace one by one)
 import ScreenLanding from "@/components/screens/ScreenLanding";
@@ -43,6 +43,20 @@ export default function KioskFlow() {
   }, [state.step]);
 
   const next = () => dispatch({ type: "NEXT_STEP" });
+
+  const prev = () => {
+    const idx = STEP_ORDER.indexOf(state.step);
+    if (idx > 0) dispatch({ type: "GO_TO", step: STEP_ORDER[idx - 1] });
+  };
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [state.step]);
 
   const progressIndex = PROGRESS_STEPS.indexOf(displayStep);
   const showProgress = displayStep !== Step.LANDING && displayStep !== Step.CONFIRMATION;

@@ -1,24 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { ScreenProps } from "@/lib/types";
 
 export default function ScreenLanding({ onNext }: ScreenProps) {
-  const [time, setTime] = useState("");
-
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      const ss = String(now.getSeconds()).padStart(2, "0");
-      const ms = String(Math.floor(now.getMilliseconds() / 10)).padStart(2, "0");
-      setTime(`${hh}:${mm}:${ss}:${ms}`);
-    };
-    tick();
-    const id = setInterval(tick, 50);
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <div
@@ -28,14 +12,22 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <div
-          className="w-full h-full bg-cover bg-center"
+          className="w-full h-full bg-cover"
           style={{
             backgroundImage: "url('/backgrounds/screen.png')",
-            filter: "blur(2px) brightness(0.4)",
+            backgroundPosition: "center 20%",
+            filter: "blur(2px) brightness(0.35)",
             transform: "scale(1.05)",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/90" />
+        {/* Vignette */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.75) 100%)",
+          }}
+        />
       </div>
 
       {/* Film grain */}
@@ -50,43 +42,10 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
         }}
       />
 
-      {/* Horizontal scan line */}
-      <div
-        className="absolute left-0 right-0 z-20 pointer-events-none"
-        style={{
-          height: "1px",
-          background: "rgba(255,255,255,0.12)",
-          animation: "scanH 6s linear infinite",
-        }}
-      />
 
-      {/* Top bar */}
-      <header className="relative z-30 flex justify-between items-start px-16 pt-8">
-        <span
-          className="text-white/40"
-          style={{
-            fontFamily: "var(--font-space-mono)",
-            fontSize: "12px",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-          }}
-        >
-          SYS://VETEMENTS_SS24
-        </span>
-        <span
-          className="text-white/40 tabular-nums"
-          style={{
-            fontFamily: "var(--font-space-mono)",
-            fontSize: "12px",
-            letterSpacing: "0.2em",
-          }}
-        >
-          {time}
-        </span>
-      </header>
 
       {/* Center content */}
-      <main className="relative z-30 flex-1 flex flex-col items-center justify-center gap-6">
+      <main className="relative z-30 flex-1 flex flex-col items-center justify-end gap-6 pb-24">
         {/* VETEMENTS outline */}
         <h1
           style={{
@@ -97,7 +56,7 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
             letterSpacing: "-0.04em",
             textTransform: "uppercase",
             color: "transparent",
-            WebkitTextStroke: "1px rgba(255,255,255,0.7)",
+            WebkitTextStroke: "2px rgba(255,255,255,0.7)",
             margin: 0,
           }}
         >
@@ -116,7 +75,7 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
             margin: 0,
           }}
         >
-          S/S 24
+          S/S24
         </h2>
 
         {/* ENTER CTA */}
@@ -140,12 +99,6 @@ export default function ScreenLanding({ onNext }: ScreenProps) {
         </div>
       </main>
 
-      <style>{`
-        @keyframes scanH {
-          0%   { top: -1px; }
-          100% { top: 100%; }
-        }
-      `}</style>
     </div>
   );
 }
