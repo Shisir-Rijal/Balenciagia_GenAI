@@ -1,4 +1,4 @@
-# Balenciaga x Ikeuchi Hiroto — Generative Event Identity Tool
+# VETEMENTS S/S24 — Generative Event Identity Tool
 ## Project Brief for Development
 
 ---
@@ -26,10 +26,10 @@
 
 ## Event Concept
 
-**Event:** Balenciaga x Ikeuchi Hiroto — Collaborative Fashion Exhibition  
+**Event:** VETEMENTS S/S24 — Generative Souvenir Experience  
 **Aesthetic:** Dystopian, Techwear, Cyberpunk, Mecha-Masks, high-end Editorial  
 **Tone:** Cold, industrial, precise. Think editorial fashion photography meets post-apocalyptic armor.  
-**References:** Ikeuchi Hiroto's resin mecha-masks, Balenciaga's oversized dystopian silhouettes, Ghost in the Shell editorial aesthetics, brutalist architecture as environment.
+**References:** Demna's deconstructed silhouettes, VETEMENTS oversized streetwear, Ghost in the Shell editorial aesthetics, brutalist architecture as environment.
 
 **Design System Rules (for "No Curation" guarantee):**
 - Fixed color palette: near-black, cold white, single accent (deep red or electric blue — to be decided)
@@ -90,7 +90,7 @@ Browser → Next.js API Route → ComfyUI → poll status → return image URL �
 
 ## Asset 1 — ID Card (Personalized, Camera-Based)
 
-**Usage scenario:** Event entrance ticket / personal collector card  
+**Usage scenario:** VETEMENTS S/S24 event entrance ticket / personal collector card  
 **Format:** Portrait, approx. credit card proportions or A6
 
 ### User Flow
@@ -119,7 +119,7 @@ Asset 1 output (figure on neutral background) is stored in React state and passe
 
 ## Asset 2 — Poster (Environment Compositing)
 
-**Usage scenario:** Event poster, printable, also exported as social media square  
+**Usage scenario:** VETEMENTS S/S24 event poster, printable, also exported as social media square  
 **Formats:** A2 portrait (poster) + 1:1 square crop (social media) — same layout component, different aspect ratio
 
 ### User Flow
