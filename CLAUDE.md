@@ -137,10 +137,18 @@ Asset 1 output (figure on neutral background) is stored in React state and passe
 8. Two export buttons: Portrait PNG (poster) and Square PNG (social media crop)
 
 ### ComfyUI Workflow Notes
-- Asset 1 generated figure on neutral background → background removal or segmentation node (SAM or rembg node in ComfyUI)
-- Selected background image fed as second input
-- Compositing + relighting prompt: match lighting direction, add atmospheric haze, integrate shadows
-- This is the most complex workflow — test and lock this early
+
+**Compositing pipeline — decided 1:4 ratio (1 generative step, 4 deterministic):**
+
+1. **Background removal** — `rembg` node in ComfyUI. Deterministic algorithm, no AI.
+2. **Background compositing** — layer the extracted figure over the chosen background. Standard image processing.
+3. **Color grading / tone matching** — LUT or curves adjustment to match color temperature between figure and background. Deterministic.
+4. **Layout rendering** — React poster template. Deterministic.
+5. **Relighting (the 1 generative step) — IC-Light.** A dedicated diffusion model that takes the extracted figure + background image and generates a relit version of the figure matching the environment's light direction and color temperature. Runs as a ComfyUI node. This is the only step where generative AI is used in the compositing pipeline — everything else is deterministic.
+
+**Why IC-Light:** It is trained specifically for portrait relighting, produces consistent results across inputs, and makes no semantic decisions — it only adjusts lighting. This keeps the "No Curation Guarantee" intact since relighting is reproducible given fixed input + background.
+
+**Background images:** Keep all 4 backgrounds lit with diffuse, neutral light (no hard side-lighting, no colored gels). This reduces the delta IC-Light needs to bridge and improves consistency.
 
 ### Background Images
 - 4 pre-selected, curated background images stored in `/public/backgrounds/`
