@@ -1,65 +1,107 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useReducer, useEffect, useRef, useState } from "react";
+import { flowReducer, initialState, Step, PROGRESS_STEPS } from "@/lib/steps";
+
+// Screen components (stubs — replace one by one)
+import ScreenLanding from "@/components/screens/ScreenLanding";
+import ScreenGuestCode from "@/components/screens/ScreenGuestCode";
+import ScreenDesignation from "@/components/screens/ScreenDesignation";
+import ScreenCaptureBriefing from "@/components/screens/ScreenCaptureBriefing";
+import ScreenCaptureLive from "@/components/screens/ScreenCaptureLive";
+import ScreenCaptureConfirm from "@/components/screens/ScreenCaptureConfirm";
+import ScreenGeneratingId from "@/components/screens/ScreenGeneratingId";
+import ScreenBackgroundSelect from "@/components/screens/ScreenBackgroundSelect";
+import ScreenGeneratingPoster from "@/components/screens/ScreenGeneratingPoster";
+import ScreenResult from "@/components/screens/ScreenResult";
+import ScreenConfirmation from "@/components/screens/ScreenConfirmation";
+
+export default function KioskFlow() {
+  const [state, dispatch] = useReducer(flowReducer, initialState);
+  const [animating, setAnimating] = useState(false);
+  const [displayStep, setDisplayStep] = useState(state.step);
+  const [slideIn, setSlideIn] = useState(false);
+  const prevStep = useRef(state.step);
+
+  useEffect(() => {
+    if (state.step === prevStep.current) return;
+
+    setAnimating(true);
+    setSlideIn(false);
+
+    const timer = setTimeout(() => {
+      setDisplayStep(state.step);
+      setSlideIn(true);
+      prevStep.current = state.step;
+      setTimeout(() => {
+        setAnimating(false);
+        setSlideIn(false);
+      }, 350);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [state.step]);
+
+  const next = () => dispatch({ type: "NEXT_STEP" });
+
+  const progressIndex = PROGRESS_STEPS.indexOf(displayStep);
+  const showProgress = displayStep !== Step.LANDING && displayStep !== Step.CONFIRMATION;
+
+  const screenProps = { state, dispatch, onNext: next };
+
+  function renderScreen() {
+    switch (displayStep) {
+      case Step.LANDING:            return <ScreenLanding {...screenProps} />;
+      case Step.GUEST_CODE:         return <ScreenGuestCode {...screenProps} />;
+      case Step.DESIGNATION:        return <ScreenDesignation {...screenProps} />;
+      case Step.CAPTURE_BRIEFING:   return <ScreenCaptureBriefing {...screenProps} />;
+      case Step.CAPTURE_LIVE:       return <ScreenCaptureLive {...screenProps} />;
+      case Step.CAPTURE_CONFIRM:    return <ScreenCaptureConfirm {...screenProps} />;
+      case Step.GENERATING_ID:      return <ScreenGeneratingId {...screenProps} />;
+      case Step.BACKGROUND_SELECT:  return <ScreenBackgroundSelect {...screenProps} />;
+      case Step.GENERATING_POSTER:  return <ScreenGeneratingPoster {...screenProps} />;
+      case Step.RESULT:             return <ScreenResult {...screenProps} />;
+      case Step.CONFIRMATION:       return <ScreenConfirmation {...screenProps} />;
+      default:                      return null;
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="relative w-full h-full overflow-hidden bg-black">
+      {/* Screen with slide transition */}
+      <div
+        className="w-full h-full transition-transform duration-[250ms] ease-in-out"
+        style={{
+          transform: animating
+            ? slideIn
+              ? "translateX(0)"
+              : "translateX(-100%)"
+            : slideIn
+            ? "translateX(0)"
+            : "translateX(0)",
+        }}
+      >
+        {renderScreen()}
+      </div>
+
+      {/* Progress bar */}
+      {showProgress && (
+        <div className="absolute bottom-0 left-0 right-0 flex" style={{ height: "2px" }}>
+          {PROGRESS_STEPS.map((s, i) => (
+            <div
+              key={s}
+              className="flex-1 transition-colors duration-500"
+              style={{
+                background:
+                  i <= progressIndex
+                    ? "var(--color-primary)"
+                    : "var(--color-surface-bright)",
+                marginRight: i < PROGRESS_STEPS.length - 1 ? "2px" : "0",
+              }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
+      )}
     </div>
   );
 }
