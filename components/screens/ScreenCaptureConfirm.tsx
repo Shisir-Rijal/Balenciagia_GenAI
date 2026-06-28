@@ -1,9 +1,10 @@
-﻿import type { ScreenProps } from "@/lib/types";
+﻿"use client";
 
-export default function ScreenCaptureConfirm({ state, dispatch, onNext }: ScreenProps) {
-  return (
-    <div className="w-full h-full flex items-center justify-center">
-      <span className="text-label text-outline">ScreenCaptureConfirm</span>
-    </div>
-  );
+import { useEffect } from "react";
+import type { ScreenProps } from "@/lib/types";
+
+// Confirm/retry is handled inside ScreenCaptureLive — this step passes through instantly.
+export default function ScreenCaptureConfirm({ onNext }: ScreenProps) {
+  useEffect(() => { onNext(); }, []);
+  return null;
 }

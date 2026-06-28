@@ -1,4 +1,19 @@
 {
-  "_comment": "ComfyUI workflow template for Asset 2 — Poster compositing. Replace with real exported workflow JSON from ComfyUI.",
-  "placeholder": true
+  "_SETUP": [
+    "1. Export your IC-Light / compositing workflow from ComfyUI as API format JSON.",
+    "2. Paste it here, replacing everything below this _SETUP key.",
+    "3. In the LoadImage node for the guest photo: set 'image' to \"__INPUT_IMAGE__\"",
+    "4. In the LoadImage node for the background: set 'image' to \"__BACKGROUND__\"",
+    "   (background value will be e.g. 'P-BG1' — map this to your actual background filename)",
+    "5. Optional: \"__GUEST_NAME__\" and \"__GUEST_CODE__\" for text overlays.",
+    "6. Set COMFY_URL=http://localhost:8188 in .env"
+  ],
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": { "image": "__INPUT_IMAGE__" }
+  },
+  "2": {
+    "class_type": "LoadImage",
+    "inputs": { "image": "__BACKGROUND__" }
+  }
 }
