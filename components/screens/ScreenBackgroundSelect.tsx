@@ -4,10 +4,10 @@ import { useRef, useState } from "react";
 import type { ScreenProps } from "@/lib/types";
 
 const BACKGROUNDS = [
-  { id: "P-BG1", src: "/backgrounds/P-BG1.png" },
-  { id: "P-BG2", src: "/backgrounds/P-BG2.png" },
+  { id: "env1", src: "/backgrounds/env1.JPG" },
+  { id: "env2", src: "/backgrounds/env2.JPG" },
+  { id: "env3", src: "/backgrounds/env3.JPG" },
   { id: "P-BG3", src: "/backgrounds/P-BG3.png" },
-  { id: "P-BG4", src: "/backgrounds/P-BG4.png" },
 ];
 
 export default function ScreenBackgroundSelect({ state, dispatch, onNext }: ScreenProps) {

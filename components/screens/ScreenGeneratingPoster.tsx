@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import type { ScreenProps } from "@/lib/types";
 
 const BG_PATHS: Record<string, string> = {
-  "P-BG1": "/backgrounds/P-BG1.png",
-  "P-BG2": "/backgrounds/P-BG2.png",
+  "env1": "/backgrounds/env1.JPG",
+  "env2": "/backgrounds/env2.JPG",
+  "env3": "/backgrounds/env3.JPG",
   "P-BG3": "/backgrounds/P-BG3.png",
-  "P-BG4": "/backgrounds/P-BG4.png",
 };
 
 export default function ScreenGeneratingPoster({ state, dispatch, onNext }: ScreenProps) {
