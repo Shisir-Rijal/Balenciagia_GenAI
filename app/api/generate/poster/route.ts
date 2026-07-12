@@ -3,6 +3,13 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 const COMFY_URL = process.env.COMFY_URL ?? "http://localhost:8188";
+const COMFY_API_KEY = process.env.COMFY_API_KEY ?? "";
+
+function comfyHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  return COMFY_API_KEY
+    ? { "X-API-Key": COMFY_API_KEY, ...extra }
+    : extra;
+}
 
 export async function POST(req: NextRequest) {
   let body: { image?: string; background?: string; guestCode?: string; designation?: string };
@@ -24,7 +31,11 @@ export async function POST(req: NextRequest) {
 
   let uploadedFilename: string;
   try {
-    const uploadRes = await fetch(`${COMFY_URL}/upload/image`, { method: "POST", body: formData });
+    const uploadRes = await fetch(`${COMFY_URL}/api/upload/image`, {
+      method: "POST",
+      headers: comfyHeaders(),
+      body: formData,
+    });
     if (!uploadRes.ok) throw new Error(`upload failed: ${uploadRes.status}`);
     const uploadJson = await uploadRes.json();
     uploadedFilename = uploadJson.name as string;
@@ -39,9 +50,8 @@ export async function POST(req: NextRequest) {
     const raw = readFileSync(join(process.cwd(), "workflows", "poster.json"), "utf-8");
     const replaced = raw
       .replace(/"__INPUT_IMAGE__"/g, JSON.stringify(uploadedFilename))
-      .replace(/"__BACKGROUND__"/g, JSON.stringify(background ?? ""))
-      .replace(/"__GUEST_NAME__"/g, JSON.stringify(designation ?? ""))
-      .replace(/"__GUEST_CODE__"/g, JSON.stringify(guestCode ?? ""));
+      .replace(/"__GUEST_NAME__"/g,  JSON.stringify(designation ?? ""))
+      .replace(/"__GUEST_CODE__"/g,  JSON.stringify(guestCode ?? ""));
     workflow = JSON.parse(replaced);
   } catch (err) {
     console.error("Workflow load error:", err);
@@ -49,14 +59,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const promptRes = await fetch(`${COMFY_URL}/prompt`, {
+    const promptRes = await fetch(`${COMFY_URL}/api/prompt`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: comfyHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ prompt: workflow }),
     });
     if (!promptRes.ok) throw new Error(`prompt failed: ${promptRes.status}`);
     const promptJson = await promptRes.json();
-    return NextResponse.json({ promptId: promptJson.prompt_id });
+    // background is passed through so the status route knows which of the
+    // three parallel outputs (05A_FINAL / 05B_FINAL / 05C_FINAL) to return
+    return NextResponse.json({ promptId: promptJson.prompt_id, background });
   } catch (err) {
     console.error("ComfyUI prompt error:", err);
     return NextResponse.json({ error: "comfy queue failed" }, { status: 502 });

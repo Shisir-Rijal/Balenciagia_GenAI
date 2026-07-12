@@ -5,48 +5,15 @@ import type { ScreenProps } from "@/lib/types";
 
 export default function ScreenGeneratingId({ state, dispatch, onNext }: ScreenProps) {
   const [dots, setDots] = useState(".");
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startedRef = useRef(false);
 
-  // animated ellipsis
   useEffect(() => {
     const id = setInterval(() => setDots((d) => d.length >= 3 ? "." : d + "."), 600);
     return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
-
-    (async () => {
-      try {
-        const res = await fetch("/api/generate/idcard", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            image: state.capturedImageBase64,
-            guestCode: state.guestCode,
-            designation: state.designation,
-          }),
-        });
-        if (!res.ok) return; // fail silently — comfy not ready yet
-        const { promptId } = await res.json();
-
-        pollRef.current = setInterval(async () => {
-          try {
-            const s = await fetch(`/api/status/${promptId}`);
-            const { status, imageUrl } = await s.json();
-            if (status === "done" && imageUrl) {
-              clearInterval(pollRef.current!);
-              dispatch({ type: "SET_ID_CARD_URL", url: imageUrl });
-              onNext();
-            }
-          } catch { /* keep polling */ }
-        }, 2000);
-      } catch { /* fail silently */ }
-    })();
-
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+    const t = setTimeout(() => { onNext(); }, 3000);
+    return () => clearTimeout(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const photo = state.capturedImageBase64;

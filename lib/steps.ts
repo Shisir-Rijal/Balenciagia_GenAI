@@ -8,6 +8,7 @@ export enum Step {
   GENERATING_ID = "GENERATING_ID",
   BACKGROUND_SELECT = "BACKGROUND_SELECT",
   GENERATING_POSTER = "GENERATING_POSTER",
+  GENERATING_VIDEO = "GENERATING_VIDEO",
   RESULT = "RESULT",
   CONFIRMATION = "CONFIRMATION",
 }
@@ -22,6 +23,7 @@ export const STEP_ORDER: Step[] = [
   Step.GENERATING_ID,
   Step.BACKGROUND_SELECT,
   Step.GENERATING_POSTER,
+  Step.GENERATING_VIDEO,
   Step.RESULT,
   Step.CONFIRMATION,
 ];
@@ -45,6 +47,10 @@ export interface FlowState {
   generatedIdCardUrl: string | null;
   selectedBackground: string | null;
   generatedPosterUrl: string | null;
+  generatedCutoutUrl: string | null;
+  generatedTicketUrl: string | null;
+  generatedSocialUrl: string | null;
+  generatedVideoUrl: string | null;
   email: string;
   wantsPoster: boolean;
 }
@@ -57,6 +63,10 @@ export const initialState: FlowState = {
   generatedIdCardUrl: null,
   selectedBackground: null,
   generatedPosterUrl: null,
+  generatedCutoutUrl: null,
+  generatedTicketUrl: null,
+  generatedSocialUrl: null,
+  generatedVideoUrl: null,
   email: "",
   wantsPoster: false,
 };
@@ -70,6 +80,10 @@ export type FlowAction =
   | { type: "SET_ID_CARD_URL"; url: string }
   | { type: "SET_BACKGROUND"; background: string }
   | { type: "SET_POSTER_URL"; url: string }
+  | { type: "SET_CUTOUT_URL"; url: string }
+  | { type: "SET_TICKET_URL"; url: string }
+  | { type: "SET_SOCIAL_URL"; url: string }
+  | { type: "SET_VIDEO_URL"; url: string }
   | { type: "SET_EMAIL"; value: string }
   | { type: "SET_WANTS_POSTER"; value: boolean }
   | { type: "RESET" };
@@ -84,7 +98,8 @@ function getNextStep(current: Step, state: FlowState): Step {
     case Step.CAPTURE_CONFIRM:   return Step.GENERATING_ID;
     case Step.GENERATING_ID:     return Step.BACKGROUND_SELECT;
     case Step.BACKGROUND_SELECT: return state.wantsPoster ? Step.GENERATING_POSTER : Step.RESULT;
-    case Step.GENERATING_POSTER: return Step.RESULT;
+    case Step.GENERATING_POSTER: return Step.GENERATING_VIDEO;
+    case Step.GENERATING_VIDEO:  return Step.RESULT;
     case Step.RESULT:            return Step.CONFIRMATION;
     case Step.CONFIRMATION:      return Step.LANDING;
     default:                     return current;
@@ -109,6 +124,14 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
       return { ...state, selectedBackground: action.background, wantsPoster: true };
     case "SET_POSTER_URL":
       return { ...state, generatedPosterUrl: action.url };
+    case "SET_CUTOUT_URL":
+      return { ...state, generatedCutoutUrl: action.url };
+    case "SET_TICKET_URL":
+      return { ...state, generatedTicketUrl: action.url };
+    case "SET_SOCIAL_URL":
+      return { ...state, generatedSocialUrl: action.url };
+    case "SET_VIDEO_URL":
+      return { ...state, generatedVideoUrl: action.url };
     case "SET_EMAIL":
       return { ...state, email: action.value };
     case "SET_WANTS_POSTER":

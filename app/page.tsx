@@ -13,6 +13,7 @@ import ScreenCaptureConfirm from "@/components/screens/ScreenCaptureConfirm";
 import ScreenGeneratingId from "@/components/screens/ScreenGeneratingId";
 import ScreenBackgroundSelect from "@/components/screens/ScreenBackgroundSelect";
 import ScreenGeneratingPoster from "@/components/screens/ScreenGeneratingPoster";
+import ScreenGeneratingVideo from "@/components/screens/ScreenGeneratingVideo";
 import ScreenResult from "@/components/screens/ScreenResult";
 import ScreenConfirmation from "@/components/screens/ScreenConfirmation";
 
@@ -74,6 +75,7 @@ export default function KioskFlow() {
       case Step.GENERATING_ID:      return <ScreenGeneratingId {...screenProps} />;
       case Step.BACKGROUND_SELECT:  return <ScreenBackgroundSelect {...screenProps} />;
       case Step.GENERATING_POSTER:  return <ScreenGeneratingPoster {...screenProps} />;
+      case Step.GENERATING_VIDEO:   return <ScreenGeneratingVideo {...screenProps} />;
       case Step.RESULT:             return <ScreenResult {...screenProps} />;
       case Step.CONFIRMATION:       return <ScreenConfirmation {...screenProps} />;
       default:                      return null;
